@@ -1,6 +1,25 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import Navbar from "@/components/Navbar";
+import "@/styles/globals.css";
+import { NextPage } from "next";
+import type { AppProps } from "next/app";
+import { ReactComponentElement } from "react";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+const getDefaultLayout = (page: React.ReactNode) => <>{page}</>;
+
+type Page<P = {}> = NextPage<P> & {
+  getLayout?: (page: React.ReactNode) => React.ReactNode;
+};
+
+type Props = AppProps & {
+  Component: Page;
+};
+
+export default function App({ Component, pageProps }: Props) {
+  const getLayout = Component?.getLayout || getDefaultLayout;
+  return (
+    <>
+      <Navbar />
+      {getLayout(<Component {...pageProps} />)}
+    </>
+  );
 }
